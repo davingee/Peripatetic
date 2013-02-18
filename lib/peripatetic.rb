@@ -21,6 +21,9 @@ module Peripatetic
   end
   
   module ClassMethods
+    # def acts_as_peripatetic
+    #   send :include, Peripatetic
+    # end
   end
   
   module ModelMethods
@@ -28,6 +31,25 @@ module Peripatetic
   end
 
   module HelperMethods
+    def nested_form_builder
+    # <%= f.fields_for poly_locations(@user, 1) do |builder| %>
+    #   <% if builder.object.new_record? %>
+    #     <%= builder.hidden_field :ip, :value => ip_address %>
+    #   <div class="field">
+    #     <%= builder.label :street %><br />
+    #     <%= builder.text_field :street %>
+    #   </div>
+    #   <div class="field">
+    #     <%= builder.label :accessor_postal_code %><br />
+    #     <%= builder.text_field :accessor_postal_code, :value => get_accessor_postal_code(builder.object)[:postal_code] %>
+    #   </div>
+    #   <div class="field">
+    #     <%= builder.label :accessor_country %><br />
+    #     <%= builder.country_select :accessor_country, get_accessor_postal_code(builder.object)[:country] %>
+    #   </div>
+    #   <% end %>
+    # <% end %>
+    end
 
     def ip_address
       (Rails.env.development? or Rails.env.test?) ? '206.127.79.163' : (env['HTTP_X_REAL_IP'] ||= env['REMOTE_ADDR'])

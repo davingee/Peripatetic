@@ -7,10 +7,10 @@ module Peripatetic
 
     belongs_to :locationable, :polymorphic => true
 
-    belongs_to :country#,      :class_name => "Peripatetic::Location::Country"
-    belongs_to :region#,       :class_name => "Peripatetic::Location::Region"
-    belongs_to :postal_code#,  :class_name => "Peripatetic::Location::PostalCode"
-    belongs_to :city#,         :class_name => "Peripatetic::Location::City"
+    belongs_to :country
+    belongs_to :region
+    belongs_to :postal_code
+    belongs_to :city
 
     reverse_geocoded_by :latitude, :longitude
     geocoded_by :location_attributes_available do |obj, results|
