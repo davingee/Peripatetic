@@ -21,9 +21,9 @@ Usage:
 Add include Peripatetic to the model you want locations
 then just drop in nested form into the form
 
-<%= f.fields_for poly_locations(model, number_of_times_to_build) do |builder| %>
-  <% if builder.object.new_record? %>
-    <%= builder.hidden_field :ip, :value => ip_address %>
+<%= f.fields_for poly_locations(model, number_of_times_to_build) do |builder| %><br>
+  <% if builder.object.new_record? %><br>
+    <%= builder.hidden_field :ip, :value => ip_address %><br>
   <div class="field">
     <%= builder.label :street %><br />
     <%= builder.text_field :street %>
@@ -36,8 +36,8 @@ then just drop in nested form into the form
     <%= builder.label :accessor_country, "Country" %><br />
     <%= builder.country_select :accessor_country, get_accessor_postal_code(builder.object)[:country] %>
   </div>
-  <% end %>
-<% end %>
+  <% end %><br>
+<% end %><br>
 
 
 ## Contributing
