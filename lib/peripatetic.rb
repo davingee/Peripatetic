@@ -40,11 +40,11 @@ module Peripatetic
     #     <%= builder.text_field :street %>
     #   </div>
     #   <div class="field">
-    #     <%= builder.label :accessor_postal_code %><br />
+    #     <%= builder.label :accessor_postal_code, "Postal Code" %><br />
     #     <%= builder.text_field :accessor_postal_code, :value => get_accessor_postal_code(builder.object)[:postal_code] %>
     #   </div>
     #   <div class="field">
-    #     <%= builder.label :accessor_country %><br />
+    #     <%= builder.label :accessor_country, "Country" %><br />
     #     <%= builder.country_select :accessor_country, get_accessor_postal_code(builder.object)[:country] %>
     #   </div>
     #   <% end %>

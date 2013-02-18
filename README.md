@@ -1,8 +1,8 @@
-# Peripatetic
+Peripatetic
 
-TODO: Write a gem description
+Drop in Location has_one or has_many
 
-## Installation
+Installation:
 
 Add this line to your application's Gemfile:
 
@@ -16,9 +16,29 @@ Or install it yourself as:
 
     $ gem install peripatetic
 
-## Usage
+Usage:
 
-TODO: Write usage instructions here
+Add include Peripatetic to the model you want locations
+then just drop in nested form into the form
+
+<%= f.fields_for poly_locations(model, number_of_times_to_build) do |builder| %>
+  <% if builder.object.new_record? %>
+    <%= builder.hidden_field :ip, :value => ip_address %>
+  <div class="field">
+    <%= builder.label :street %><br />
+    <%= builder.text_field :street %>
+  </div>
+  <div class="field">
+    <%= builder.label :accessor_postal_code, "Postal Code" %><br />
+    <%= builder.text_field :accessor_postal_code, :value => get_accessor_postal_code(builder.object)[:postal_code] %>
+  </div>
+  <div class="field">
+    <%= builder.label :accessor_country, "Country" %><br />
+    <%= builder.country_select :accessor_country, get_accessor_postal_code(builder.object)[:country] %>
+  </div>
+  <% end %>
+<% end %>
+
 
 ## Contributing
 
