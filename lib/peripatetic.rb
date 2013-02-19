@@ -1,9 +1,7 @@
 require "peripatetic/version"
 require 'peripatetic/location'
-require 'peripatetic/city'
-require 'peripatetic/country'
 require 'peripatetic/postal_code'
-require 'peripatetic/region'
+require 'peripatetic/country'
 
 module Peripatetic
   def self.included(base)
@@ -51,40 +49,55 @@ module Peripatetic
     # <% end %>
     end
 
+    def all_countries
+      Country.select([:id, :name, :position]).order("position ASC")
+    end
+    
     def ip_address
       (Rails.env.development? or Rails.env.test?) ? '206.127.79.163' : (env['HTTP_X_REAL_IP'] ||= env['REMOTE_ADDR'])
     end
 
     def get_country
-      # Geokit::Geocoders::google = "AIzaSyAi43R79isU8MeS7ISBxAdUUe2phnoxpoM"
-      # res = GeoKit::Geocoders::IpGeocoder.geocode(ip_address)
-      # if res.success
-      #   res.country
-      #   res.country_code
-      #   # get_country = {:country => res.country, :country_code => res.country_code}
-      # end
-      res = Geocoder.search(ip_address)
-      if res.first
-        @get_country = { :ip => ip_address, :country => res.first.country, :postal_code => res.first.postal_code }
+      if builder.object.accessor_postal_code.present?
+        @get_country = { :ip => ip_address, :country => builder.object.accessor_country, :postal_code => builder.object.accessor_postal_code }
+      else
+        res = Geocoder.search(ip_address)
+        if res.first
+          @get_country = { :ip => ip_address, :country => res.first.country, :postal_code => res.first.postal_code }
+        end
       end
+    end
+    
+    def get_accessors(model)
+      @get_accessors ||= get_accessor_postal_code(model)
     end
 
     def get_accessor_postal_code(model)
+      # return unless @get_accessor_postal_code.blank?
       if model.postal_code.blank?
         res = Geocoder.search(ip_address)
         if res.first
-          @get_accessor_postal_code = { :ip => ip_address, :country => res.first.country, :postal_code => res.first.postal_code }
+          country = Country.select([:id, :name, :position]).find_by_name(res.first.country)
+          if country.present?
+            country_id = country.id
+          else
+            country_id = Country.select([:id, :name, :position]).find_by_name("United States").id
+          end
+          model.country_id = country_id
+          @get_accessor_postal_code = { :ip => ip_address, :postal_code => res.first.postal_code }
+        else
+          @get_accessor_postal_code = { :ip => ip_address, :postal_code => "" }
         end
       else
-        @get_accessor_postal_code = { :ip => ip_address, :country => model.postal_code.country_name, :postal_code => model.postal_code.name }
+        @get_accessor_postal_code = { :ip => ip_address, :postal_code => model.postal_code }
       end
     end
 
-    def poly_locations(model, amount=false)
+    def peripatetic_locations(model, amount=false)
       if amount == false
         model.build_location 
       else
-        amount.times { model.locations.build }
+        amount.times { model.locations.build } if model.new_record?
       end
       :locations
     end

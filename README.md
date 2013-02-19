@@ -21,7 +21,7 @@ Usage:
 Add include Peripatetic to the model you want locations
 then just drop in nested form into the form
 
-<%= f.fields_for poly_locations(model, number_of_times_to_build) do |builder| %><br>
+<%= f.fields_for peripatetic_locations(model, number_of_times_to_build) do |builder| %><br>
   <% if builder.object.new_record? %><br>
     <%= builder.hidden_field :ip, :value => ip_address %><br>
   <div class="field">
