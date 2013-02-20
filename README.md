@@ -1,6 +1,6 @@
 Peripatetic
 
-Drop in Location has_one or has_many
+Drop in Location for any model has_one or has_many, creates a nested association and allows you to drop into your form a partial
 
 Installation:
 

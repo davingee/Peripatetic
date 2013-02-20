@@ -1,7 +1,8 @@
 module Peripatetic
 
   class PostalCode < ActiveRecord::Base
-    attr_accessible :name, :city, :country_code, :region, :region_code, :latitude, :longitude
+    attr_accessible :postal_code, :city, :country_code, :region, :region_code, :latitude, :longitude, :time_zone, :country_id
+    belongs_to :country
     # has_many :locations
   end
 

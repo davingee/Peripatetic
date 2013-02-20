@@ -9,10 +9,10 @@ module Peripatetic
     base.extend ClassMethods
 
     base.class_eval do
-      attr_accessible :locations_attributes
+      attr_accessible :locations_attributes #, :location_attributes
       has_many :locations, :as => :locationable, :class_name => "Peripatetic::Location"
       accepts_nested_attributes_for :locations, :reject_if => lambda { |a| a[:accessor_postal_code].blank? }, :allow_destroy => true
-      # has_one :location, :as => :locationable
+      # has_one :location, :as => :locationable, :class_name => "Peripatetic::Location"
       # accepts_nested_attributes_for :location, :reject_if => lambda { |a| a[:accessor_postal_code].blank? }, :allow_destroy => true
     end
     
@@ -95,11 +95,13 @@ module Peripatetic
 
     def peripatetic_locations(model, amount=false)
       if amount == false
+        # user.build_profile  # this will work
         model.build_location 
+        :location
       else
         amount.times { model.locations.build } if model.new_record?
+        :locations
       end
-      :locations
     end
   end
 

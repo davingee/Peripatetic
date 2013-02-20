@@ -2,8 +2,8 @@ require 'geocoder'
 module Peripatetic
 
   class Location < ActiveRecord::Base
-    attr_accessible :latitude, :longitude, :street, :accessor_country, :accessor_postal_code, :time_zone, :ip
-    attr_accessor :accessor_country, :accessor_postal_code, :time_zone, :ip
+    attr_accessible :latitude, :longitude, :street, :accessor_country, :accessor_postal_code, :time_zone, :ip, :country_id
+    attr_accessor :accessor_country, :accessor_postal_code, :ip
 
     belongs_to :locationable, :polymorphic => true
     belongs_to :country
@@ -28,10 +28,11 @@ module Peripatetic
     after_validation :geocode,              :if     => :street_present_or_changed?
     after_validation :inject_location_info
     
+    
     validate :validate_postal_code
     def validate_postal_code
-      # return unless postal_code_changed? and postal_code.present?
-      if PostalCode.find_by_name_and_country_code(accessor_postal_code ,accessor_country).present?
+      return unless postal_code_changed? and postal_code.present?
+      if PostalCode.find_by_postal_code_and_country_code(accessor_postal_code, country.alpha2).present?
         true
       else
         errors.add(:postal_code, "appears to be invalid") 
@@ -64,14 +65,17 @@ module Peripatetic
     end
 
     def inject_location_info
-      p_c = PostalCode.find_by_name_and_country_code(accessor_postal_code, accessor_country)
+      # p_c = Peripatetic::PostalCode.find_by_postal_code_and_country_code("59601", (Peripatetic::Country.find(231).alpha2))
+      # p_c = Peripatetic::PostalCode.find_by_postal_code_and_country_code("59601", "US")
+      p_c = PostalCode.find_by_postal_code_and_country_code(accessor_postal_code, (country.alpha2))
       puts "almost injecting"
       return unless postal_code_changed? or self.new_record?
       puts "injecting"
-      self.postal_code = p_c.name
+      self.postal_code = p_c.postal_code
       self.city = p_c.city
       self.region = p_c.region
       self.country_code = p_c.country_code
+      self.time_zone = p_c.time_zone unless p_c.time_zone == "f" 
       self.latitude = p_c.latitude
       self.longitude = p_c.longitude
     end

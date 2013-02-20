@@ -1,4 +1,5 @@
 class AddRenameRemove < ActiveRecord::Migration
+  # after importing postal_code db from geonames
   def up
     add_column    :postal_codes,  :id,          :primary_key
     add_column    :postal_codes,  :geocoded,    :boolean,     :default => false
